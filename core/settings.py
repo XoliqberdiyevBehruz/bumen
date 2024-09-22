@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     # local apps
     'account',
+    'common',
 ]
 
 MIDDLEWARE = [
@@ -138,7 +139,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
+AUTH_USER_MODEL = 'account.User'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
@@ -150,8 +151,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=120),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": True,
@@ -188,12 +189,11 @@ LOCALE_PATHS = [
 ]
 
 
-
 JAZZMIN_SETTINGS = {
-    "site_title": "Library Admin",
+    "site_title": None,
     "site_header": "Library",
-    "site_brand": "Library",
-    "site_logo": "books/img/logo.png",
+    "site_brand": None,
+    "site_logo":None,
     "login_logo": None,
     "login_logo_dark": None,
     "site_logo_classes": "img-circle",
