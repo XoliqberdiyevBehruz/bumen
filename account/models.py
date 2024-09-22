@@ -1,8 +1,12 @@
+import random
+
 from django.db import models
-from common.models import BaseModel, Media
-from django.contrib.auth.models import AbstractUser
-from account.managers import CustomUserManager
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import AbstractUser
+
+from common.models import BaseModel, Media
+from account.managers import CustomUserManager
 
 
 class User(AbstractUser, BaseModel):
@@ -33,7 +37,31 @@ class User(AbstractUser, BaseModel):
     def __str__(self) -> str:
         return self.phone_number or self.email or self.username
 
+    def generate_verify_code(self):
+        code = ''.join([str(random.randint(0, 100) % 10) for _ in range(5)])
+        UserOtpCode.objects.create(
+            user=self,
+            code='11111', # codeni testlash uchun 5 ta 1 sonini qoydim, default code deb qoyilishi kerak
+            expires_at=timezone.now() + timezone.timedelta(minutes=5),
+        )
+        return code
+
     class Meta:
         verbose_name = _("User")
         verbose_name_plural = _("Users")
+
+
+class UserOtpCode(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="otp_codes")
+    code = models.CharField(max_length=5)
+    expires_at = models.DateTimeField(null=True, blank=True)
+    is_used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.user.phone_number} opt code is {self.code}'
+
+    class Meta:
+        verbose_name = _("User OTP Code")
+        verbose_name_plural = _("User OTP Codes")
+
 
