@@ -12,3 +12,22 @@ class CategoryListView(generics.ListAPIView):
     filterset_class = filters.CategoryFilter
     queryset = models.Category.objects.all()
 
+
+class CategoryDetailView(generics.RetrieveAPIView):
+    serializer_class = serializers.CategorySerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = models.Category.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        category = models.Category.objects.get(pk=kwargs['pk'])
+        sub_categories = models.Lesson.objects.filter(category=category)
+        sub_category_serializer = serializers.LessonSerializer(sub_categories, many=True)
+        serializer = serializers.CategorySerializer(category)
+        data = {
+            'category': {
+                'data': serializer.data,
+                'lessons': sub_category_serializer.data
+            },
+        }
+        return Response(data)
+

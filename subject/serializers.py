@@ -9,3 +9,8 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'logo')
         read_only_fields = ('id',)
 
+
+class LessonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Category
+        fields = ('id', 'name', 'logo')
